@@ -68,7 +68,14 @@ open class XAxisRenderer: AxisRendererBase
         
         let longest = xAxis.getLongestLabel()
         
-        let labelSize = longest.size(withAttributes: [NSAttributedStringKey.font: xAxis.labelFont])
+        var labelSize = longest.size(withAttributes: [NSAttributedStringKey.font: xAxis.labelFont])
+        
+        if xAxis.maxLabelWidth != 0 {
+            
+            let size = CGSize(width: min(xAxis.maxLabelWidth, labelSize.width), height: CGFloat.greatestFiniteMagnitude)
+            
+            labelSize = (longest as NSString).boundingRect(with: size, options: NSStringDrawingOptions.usesLineFragmentOrigin, attributes: [NSAttributedStringKey.font: xAxis.labelFont], context: nil).size
+        }
         
         let labelWidth = labelSize.width
         let labelHeight = labelSize.height
@@ -194,7 +201,7 @@ open class XAxisRenderer: AxisRendererBase
         
         if xAxis.isWordWrapEnabled
         {
-            labelMaxSize.width = xAxis.wordWrapWidthPercent * valueToPixelMatrix.a
+            labelMaxSize.width = xAxis.maxLabelWidth != 0 ? xAxis.maxLabelWidth : xAxis.wordWrapWidthPercent * valueToPixelMatrix.a
         }
         
         let entries = xAxis.entries
