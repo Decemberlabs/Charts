@@ -61,7 +61,12 @@ open class YAxisRendererHorizontalBarChart: YAxisRenderer
             return
         }
         
-        let lineHeight = yAxis.labelFont.lineHeight
+        let angle: CGFloat = -45
+        let longestLabel = yAxis.getLongestLabel()
+        
+        let labelSize = longestLabel.size(withAttributes: [NSAttributedStringKey.font: yAxis.labelFont])
+        let labelRotatedSize = labelSize.rotatedBy(degrees: angle)
+        
         let baseYOffset: CGFloat = 2.5
         
         let dependency = yAxis.axisDependency
@@ -84,23 +89,20 @@ open class YAxisRendererHorizontalBarChart: YAxisRenderer
         {
             if labelPosition == .outsideChart
             {
-                yPos = viewPortHandler.contentBottom + lineHeight + baseYOffset
+                yPos = viewPortHandler.contentBottom + labelRotatedSize.height + baseYOffset
             }
             else
             {
-                yPos = viewPortHandler.contentBottom + lineHeight + baseYOffset
+                yPos = viewPortHandler.contentBottom + labelRotatedSize.height + baseYOffset
             }
         }
-        
-        // For compatibility with Android code, we keep above calculation the same,
-        // And here we pull the line back up
-        yPos -= lineHeight
         
         drawYLabels(
             context: context,
             fixedPosition: yPos,
             positions: transformedPositions(),
-            offset: yAxis.yOffset)
+            offset: yAxis.yOffset,
+            angle: angle)
     }
     
     open override func renderAxisLine(context: CGContext)
@@ -147,7 +149,8 @@ open class YAxisRendererHorizontalBarChart: YAxisRenderer
         context: CGContext,
         fixedPosition: CGFloat,
         positions: [CGPoint],
-        offset: CGFloat)
+        offset: CGFloat,
+        angle: CGFloat)
     {
         guard let
             yAxis = axis as? YAxis
@@ -167,8 +170,9 @@ open class YAxisRendererHorizontalBarChart: YAxisRenderer
                 context: context,
                 text: text,
                 point: CGPoint(x: positions[i].x, y: fixedPosition - offset),
-                align: .center,
-                attributes: [NSAttributedStringKey.font: labelFont, NSAttributedStringKey.foregroundColor: labelTextColor])
+                attributes: [NSAttributedStringKey.font: labelFont, NSAttributedStringKey.foregroundColor: labelTextColor],
+                anchor: CGPoint(x: 1.0, y: 1.0),
+                angleRadians: angle.DEG2RAD)
         }
     }
     
