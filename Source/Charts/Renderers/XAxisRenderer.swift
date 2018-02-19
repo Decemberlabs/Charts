@@ -231,12 +231,18 @@ open class XAxisRenderer: AxisRendererBase
                     // avoid clipping of the last
                     if i == xAxis.entryCount - 1 && xAxis.entryCount > 1
                     {
-                        let width = labelns.boundingRect(with: labelMaxSize, options: .usesLineFragmentOrigin, attributes: labelAttrs, context: nil).size.width
+                        
+                        let labelSize = labelns.boundingRect(with: labelMaxSize, options: NSStringDrawingOptions.usesLineFragmentOrigin, attributes: labelAttrs, context: nil).size
+                        let labelRotatedSize = labelSize.rotatedBy(degrees: xAxis.labelRotationAngle)
+                        
+                        let width = labelRotatedSize.width
+                        
+                        let labelXPos = position.x + (width - (width * anchor.x))
                         
                         if width > viewPortHandler.offsetRight * 2.0
-                            && position.x + width > viewPortHandler.chartWidth
+                            && labelXPos > viewPortHandler.chartWidth
                         {
-                            position.x -= width / 2.0
+                            position.x -= (labelXPos - viewPortHandler.chartWidth)
                         }
                     }
                     else if i == 0
