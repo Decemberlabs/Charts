@@ -349,16 +349,6 @@ open class HorizontalBarChartRenderer: BarChartRenderer
                         
                         let y = rect.origin.y + rect.size.height / 2.0
                         
-                        if !viewPortHandler.isInBoundsTop(rect.origin.y)
-                        {
-                            break
-                        }
-                        
-                        if !viewPortHandler.isInBoundsBottom(rect.origin.y)
-                        {
-                            continue
-                        }
-                        
                         let val = e.y
                         let valueText = formatter.stringForValue(
                             val,
@@ -382,8 +372,7 @@ open class HorizontalBarChartRenderer: BarChartRenderer
                             drawValue(
                                 context: context,
                                 value: valueText,
-                                xPos: (rect.origin.x + rect.size.width)
-                                    + (val >= 0.0 ? posOffset : negOffset),
+                                xPos: val >= 0.0 ? (rect.origin.x + rect.size.width) + posOffset : rect.origin.x + negOffset,
                                 yPos: y + yOffset,
                                 font: valueFont,
                                 align: textAlign,
