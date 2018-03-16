@@ -104,7 +104,7 @@ open class AxisRendererBase: Renderer
         
         // Find out how much spacing (in y value space) between axis values
         let rawInterval = range / Double(labelCount)
-        var interval = rawInterval.roundedToNextSignficant()
+        var interval = axis.forcedIntervalValue != 0 ? Double(axis.forcedIntervalValue) : rawInterval.roundedToNextSignficant()
         
         // If granularity is enabled, then do not allow the interval to go below specified granularity.
         // This is used to avoid repeated values when rounding values for display.

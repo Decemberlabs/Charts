@@ -41,6 +41,8 @@ open class AxisBase: ComponentBase
     @objc open var drawGridLinesEnabled = true
     @objc open var drawAxisLineEnabled = true
     
+    @objc open var forcedIntervalValue: CGFloat = 0.0
+    
     /// flag that indicates of the labels of this axis should be drawn or not
     @objc open var drawLabelsEnabled = true
     
